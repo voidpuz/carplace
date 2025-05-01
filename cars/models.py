@@ -14,6 +14,7 @@ class Car(BaseModel):
     description = models.TextField(null=True, blank=True)
     price = models.PositiveIntegerField(null=False, blank=False)
     brand = models.ForeignKey('cars.Brand', on_delete=models.CASCADE, related_name='cars')
+    image = models.ImageField(upload_to='cars', null=True, blank=True)
     year = models.PositiveIntegerField(validators=[
         MinValueValidator(1900), 
         MaxValueValidator(2025)
