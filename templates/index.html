@@ -77,9 +77,9 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                     <div class="navbar-nav ml-auto py-0">
-                        <a href="index.html" class="nav-item nav-link active">Home</a>
-                        <a href="about.html" class="nav-item nav-link">About</a>
-                        <a href="service.html" class="nav-item nav-link">Service</a>
+                        <a href="{% url 'cars:index' %}" class="nav-item nav-link active">Home</a>
+                        <a href="{% url 'cars:about' %}" class="nav-item nav-link">About</a>
+                        <a href="{% url 'cars:services' %}" class="nav-item nav-link">Service</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Cars</a>
                             <div class="dropdown-menu rounded-0 m-0">
@@ -107,45 +107,19 @@
     <!-- Search Start -->
     <div class="container-fluid bg-white pt-3 px-lg-5">
         <div class="row mx-n2">
-            <div class="col-xl-2 col-lg-4 col-md-6 px-2">
-                <select class="custom-select px-4 mb-3" style="height: 50px;">
-                    <option selected>Pickup Location</option>
-                    <option value="1">Location 1</option>
-                    <option value="2">Location 2</option>
-                    <option value="3">Location 3</option>
-                </select>
-            </div>
-            <div class="col-xl-2 col-lg-4 col-md-6 px-2">
-                <select class="custom-select px-4 mb-3" style="height: 50px;">
-                    <option selected>Drop Location</option>
-                    <option value="1">Location 1</option>
-                    <option value="2">Location 2</option>
-                    <option value="3">Location 3</option>
-                </select>
-            </div>
-            <div class="col-xl-2 col-lg-4 col-md-6 px-2">
-                <div class="date mb-3" id="date" data-target-input="nearest">
-                    <input type="text" class="form-control p-4 datetimepicker-input" placeholder="Pickup Date"
-                        data-target="#date" data-toggle="datetimepicker" />
+                <div class="col-xl-2 col-lg-4 col-md-6 px-2">
+                    <form action="{% url 'cars:search-car' %}" method="POST">
+                        {% csrf_token %}
+                        <select id="brand" name="brand" class="custom-select px-4 mb-3" style="height: 50px;">
+                            {% for brand in brands %}
+                            <option value="{{brand.id}}">{{brand.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="col-xl-2 col-lg-4 col-md-6 px-2">
+                            <input class="btn btn-primary btn-block mb-3" type="submit" style="height: 50px;">Search</button>
+                        </div>
+                    </form>
                 </div>
-            </div>
-            <div class="col-xl-2 col-lg-4 col-md-6 px-2">
-                <div class="time mb-3" id="time" data-target-input="nearest">
-                    <input type="text" class="form-control p-4 datetimepicker-input" placeholder="Pickup Time"
-                        data-target="#time" data-toggle="datetimepicker" />
-                </div>
-            </div>
-            <div class="col-xl-2 col-lg-4 col-md-6 px-2">
-                <select class="custom-select px-4 mb-3" style="height: 50px;">
-                    <option selected>Select A Car</option>
-                    <option value="1">Car 1</option>
-                    <option value="2">Car 1</option>
-                    <option value="3">Car 1</option>
-                </select>
-            </div>
-            <div class="col-xl-2 col-lg-4 col-md-6 px-2">
-                <button class="btn btn-primary btn-block mb-3" type="submit" style="height: 50px;">Search</button>
-            </div>
         </div>
     </div>
     <!-- Search End -->
@@ -342,7 +316,7 @@
                 {% for car in cars %}
                 <div class="col-lg-4 col-md-6 mb-2">
                     <div class="rent-item mb-4">
-                        <img class="img-fluid mb-4" src="{{car.image.url}}" alt="Car Image">
+                        <img class="img-fluid mb-4" src="{% if car.image %}{{car.image.url}}{% else %}{% static "img/default_img.jpg" %}{% endif %}" alt="Car Image">
                         <h4 class="text-uppercase mb-4">{{car.name}}</h4>
                         <div class="d-flex justify-content-center mb-4">
                             <div class="px-2">
@@ -480,20 +454,21 @@
             <div class="row">
                 <div class="col-lg-7 mb-2">
                     <div class="contact-form bg-light mb-4" style="padding: 30px;">
-                        <form>
+                        <form action="{% url 'cars:contactmessage' %}" method="POST">
+                            {% csrf_token %}
                             <div class="row">
                                 <div class="col-6 form-group">
-                                    <input type="text" class="form-control p-4" placeholder="Your Name" required="required">
+                                    <input id="name" name="name" type="text" class="form-control p-4" placeholder="Your Name" required="required">
                                 </div>
                                 <div class="col-6 form-group">
-                                    <input type="email" class="form-control p-4" placeholder="Your Email" required="required">
+                                    <input id="email" name="email" type="email" class="form-control p-4" placeholder="Your Email" required="required">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control p-4" placeholder="Subject" required="required">
+                                <input id="subject" name="subject" type="text" class="form-control p-4" placeholder="Subject" required="required">
                             </div>
                             <div class="form-group">
-                                <textarea class="form-control py-3 px-4" rows="5" placeholder="Message" required="required"></textarea>
+                                <textarea id="message" name="message" class="form-control py-3 px-4" rows="5" placeholder="Message" required="required"></textarea>
                             </div>
                             <div>
                                 <button class="btn btn-primary py-3 px-5" type="submit">Send Message</button>

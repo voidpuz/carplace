@@ -15,3 +15,13 @@ class MediaFile(BaseModel):
 
     def __str__(self):
         return self.file.name
+
+
+class ContactMessage(BaseModel):
+    name = models.CharField(max_length=100, null=False, blank=False)
+    email = models.EmailField(max_length=100, null=False, blank=False)
+    subject = models.CharField(max_length=100, null=False, blank=False)
+    message = models.TextField(null=False, blank=False)
+
+    def __str__(self):
+        return f"{self.name}'s contact message"
